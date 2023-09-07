@@ -1,0 +1,38 @@
+service: ${self:provider.environment.COID}-${self:provider.environment.ASSETID}-${self:provider.environment.APID}-${self:provider.environment.SID}-SLS-00
+
+frameworkVersion: "3"
+
+plugins:
+  - '@hewmen/serverless-plugin-typescript'
+  - serverless-plugin-optimize
+  - serverless-offline
+  # - serverless-plugin-warmup
+
+# custom:
+#   # Enable warmup on all functions (only for production and staging)
+#   warmup:
+#       - production
+#       - staging
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  environment:
+      ENV: ${opt:stage, 'dev'}
+      ASSETID: '0387'
+      APID: 'JZFR'
+      SID: 'FRD'
+      COID: 'JYZV'
+
+package:
+  individually: true
+
+functions:
+  main:
+    name: ${self:provider.environment.COID}-${self:provider.environment.ASSETID}-${self:provider.environment.APID}-${self:provider.environment.SID}-LA-00-MAIN
+    handler: src/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /{proxy+}
